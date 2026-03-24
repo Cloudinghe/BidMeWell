@@ -46,6 +46,7 @@ BidMeWell/
 │
 ├── scripts/                  # 脚本工具
 │   ├── run_practice.py       # 启动练习
+│   ├── test_single_hand.py   # 单牌测试
 │   └── validate_rules.py     # 规则验证
 │
 ├── tests/                    # 测试用例
@@ -182,7 +183,8 @@ python scripts/validate_rules.py
 - [x] 自动模式
 - [x] 交互模式
 - [x] 测试框架
-- [x] 扩展规则 (115条完成)
+- [x] 扩展规则 (122条完成)
+- [x] 单牌测试脚本
 - [ ] Web界面
 
 ## 许可证
@@ -201,6 +203,6 @@ python scripts/validate_rules.py
 
 | 版本 | 日期 | 说明 |
 |------|------|------|
-| v0.3.0 | 2026-03-24 | 重命名项目为 BidMeWell，扩展规则至115条 |
+| v0.3.0 | 2026-03-24 | 重命名项目为 BidMeWell，扩展规则至122条，添加单牌测试脚本 |
 | v0.2.0 | 2026-03-24 | 集成发牌引擎和规则解析 |
 | v0.1.0 | 2026-03-24 | 初始版本 |
