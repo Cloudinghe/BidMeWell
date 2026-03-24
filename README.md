@@ -45,7 +45,8 @@ BidMeWell/
 │       └── 现代精确叫牌法规则库.docx
 │
 ├── scripts/                  # 脚本工具
-│   ├── run_practice.py       # 启动练习
+│   ├── run_practice.py       # 启动练习（开叫练习）
+│   ├── run_practice2.py      # 应叫练习
 │   ├── test_single_hand.py   # 单牌测试
 │   └── validate_rules.py     # 规则验证
 │
@@ -86,11 +87,17 @@ pip install -e .
 ### 运行练习
 
 ```bash
-# 交互模式
+# 交互模式 - 开叫练习
 python scripts/run_practice.py
 
 # 自动模式（程序自动叫牌）
 python scripts/run_practice.py --auto --boards 10
+
+# 应叫练习 - 练习同伴开叫后的应叫
+python scripts/run_practice2.py
+
+# 单牌测试 - 展示规则匹配过程
+python scripts/test_single_hand.py
 
 # 验证规则文件
 python scripts/validate_rules.py

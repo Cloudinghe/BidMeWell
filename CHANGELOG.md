@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 新增转移示强应叫后的详细叫牌规则
 - 扩展开叫及应叫规则 (87条)
 - 新增单牌测试脚本 (test_single_hand.py)
+- 新增应叫练习脚本 (run_practice2.py) - 练习同伴开叫后的应叫能力
 
 ## [0.2.0] - 2026-03-24
 

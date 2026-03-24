@@ -176,6 +176,30 @@ python scripts/run_practice.py
   python scripts/validate_rules.py -r custom.xml    # 验证自定义规则
 ```
 
+### run_practice2.py 参数
+
+```
+用法: python scripts/run_practice2.py [选项]
+
+选项:
+  -r, --rules FILE      指定规则文件 (默认: rules/modern_precision.xml)
+  -a, --auto            自动模式
+  -b, --boards N        练习副数 (默认: 无限)
+  -s, --seed SEED       随机种子
+  -h, --help            显示帮助信息
+
+示例:
+  python scripts/run_practice2.py                   # 交互模式练习应叫
+  python scripts/run_practice2.py --auto --boards 5 # 自动模式练习5副
+  python scripts/run_practice2.py --seed 42         # 固定随机种子
+
+交互模式命令:
+  quit/exit             退出程序
+  partner               查看同伴持牌
+  hint                  显示推荐应叫
+  skip                  跳到下一副牌
+```
+
 ---
 
 ## 练习模式
@@ -305,6 +329,55 @@ python scripts/test_single_hand.py --detail
     - 高牌点: 14 HCP
     - 红心: 5 张
 ```
+
+### 4. 应叫练习
+
+使用 `run_practice2.py` 练习同伴开叫后的应叫：
+
+```bash
+# 交互模式 - 练习应叫
+python scripts/run_practice2.py
+
+# 自动模式
+python scripts/run_practice2.py --auto --boards 10
+
+# 固定随机种子
+python scripts/run_practice2.py --seed 42
+```
+
+输出示例：
+
+```
+------------------------------------------------------------
+第 1 副牌
+------------------------------------------------------------
+
+叫牌进程：
+  北家(同伴): 1S - 11-15 HCP, 5张以上黑桃
+  东家(对手): Pass
+
+你的持牌（南家）：
+  ♠: Q J 2
+  ♥: J 6
+  ♦: T 8 5 3 2
+  ♣: 8 6 5
+
+点力分析：
+  高牌点(HCP): 4
+  控制点: 0
+  牌型: 3-2-5-3
+
+请选择你的应叫:
+  pass - 无法应叫
+
+你的应叫 >
+```
+
+交互命令：
+- `partner` - 查看同伴（北家）持牌
+- `hint` - 显示推荐应叫
+- `quit` / `exit` - 退出程序
+- `skip` - 跳到下一副牌
 
 ---
 
