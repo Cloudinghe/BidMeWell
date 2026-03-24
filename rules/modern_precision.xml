@@ -870,11 +870,20 @@ XML结构说明：
   <!-- 11. 3NT赌博性开叫 -->
   <bid id="3n-gambling">
     <value>3n</value>
-    <desc>赌博性3NT，坚实低花长套</desc>
+    <desc>赌博性3NT，坚实低花长套（AKQ领头），边花无A或K，10-13 HCP</desc>
     <and>
+      <evaluation><hcp><min>10</min><max>13</max></hcp></evaluation>
       <or>
-        <shape type="clubs"><min>7</min></shape>
-        <shape type="diamonds"><min>7</min></shape>
+        <and>
+          <shape type="clubs"><min>7</min></shape>
+          <topCards suit="clubs" positions="3" contains="AKQ"/>
+          <sideSuits exclude="clubs" notContains="A,K"/>
+        </and>
+        <and>
+          <shape type="diamonds"><min>7</min></shape>
+          <topCards suit="diamonds" positions="3" contains="AKQ"/>
+          <sideSuits exclude="diamonds" notContains="A,K"/>
+        </and>
       </or>
     </and>
   </bid>

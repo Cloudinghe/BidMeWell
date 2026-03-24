@@ -22,6 +22,8 @@ from practice.xml_parsing.conditions import AndCondition, OrCondition
 from practice.xml_parsing.conditions import Condition, BaseCondition
 from practice.xml_parsing.conditions import NotCondition
 from practice.xml_parsing.conditions import EvaluationCondition
+from practice.xml_parsing.conditions import TopCardsCondition, SideSuitsCondition
+from practice.xml_parsing.conditions import StopperCondition, DistributionCondition
 
 
 CHIMAERA_HCP = Evaluator(4.5, 3, 1.5, 0.75, 0.25)
@@ -419,6 +421,49 @@ class XmlReaderForFile:
 
         return evaluation_conditions
 
+    def _get_card_conditions(self, xml_condition):
+        """Parse card-related conditions (topCards, sideSuits, stopper)."""
+        from practice.xml_parsing.conditions import (
+            TopCardsCondition, SideSuitsCondition, StopperCondition,
+            HonorsCondition, DistributionCondition
+        )
+
+        conditions = []
+
+        # Parse topCards conditions
+        for top_cards in xml_condition.findall("topCards"):
+            suit = top_cards.attrib.get("suit")
+            positions = int(top_cards.attrib.get("positions", "3"))
+            contains = top_cards.attrib.get("contains", "AKQ")
+            conditions.append(TopCardsCondition(suit, positions, contains))
+
+        # Parse sideSuits conditions
+        for side_suits in xml_condition.findall("sideSuits"):
+            exclude = side_suits.attrib.get("exclude", "")
+            not_contains = side_suits.attrib.get("notContains", "")
+            conditions.append(SideSuitsCondition(exclude, not_contains))
+
+        # Parse stopper conditions
+        for stopper in xml_condition.findall("stopper"):
+            suit = stopper.attrib.get("suit")
+            has_stopper = stopper.attrib.get("has", "true").lower() == "true"
+            conditions.append(StopperCondition(suit, has_stopper))
+
+        # Parse honors conditions
+        for honors in xml_condition.findall("honors"):
+            suit = honors.attrib.get("suit")
+            min_honors = int(honors.attrib.get("min", "3"))
+            in_first = int(honors.attrib.get("inFirst", "5"))
+            conditions.append(HonorsCondition(suit, min_honors, in_first))
+
+        # Parse distribution conditions
+        for dist in xml_condition.findall("distribution"):
+            dist_type = dist.attrib.get("type")
+            suit = dist.attrib.get("suit")
+            conditions.append(DistributionCondition(dist_type, suit))
+
+        return conditions
+
     def _define_logical_condition(self, xml_condition) -> BaseCondition:
         tag = xml_condition.tag
         child_conditions = []
@@ -435,6 +480,7 @@ class XmlReaderForFile:
         child_conditions.extend(self._get_evaluation_conditions(xml_condition))
         child_conditions.extend(self._get_formulas(xml_condition))
         child_conditions.extend(_get_shape_conditions(xml_condition))
+        child_conditions.extend(self._get_card_conditions(xml_condition))
 
         if tag == "and":
             base_condition = AndCondition(child_conditions)
