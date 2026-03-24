@@ -1,0 +1,1229 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+================================================================================
+现代精确叫牌法规则库 - XML格式
+================================================================================
+
+数据来源：《现代精确叫牌法》
+作者：大卫·伯科维兹、布兰特·曼雷
+译者：杨静、于红英
+出版社：人民体育出版社
+出版时间：2002年2月
+ISBN：9787500926795
+
+点力系统：Milton Work 标准 (A=4, K=3, Q=2, J=1)
+规则总数：122条
+
+核心特点：
+1. 1♣强开叫：16+ HCP，约定性开叫（与梅花张数无关）
+2. 限制性开叫：除1♣外所有开叫均为11-15 HCP
+3. 弱无将：1NT = 13-15 HCP 均型
+4. 转移示强：1♣后用转移叫显示5张以上套
+5. 二盖一逼局：2阶新花应叫逼叫到局
+
+XML结构说明：
+- <bid>: 叫品定义
+- <value>: 叫品值 (如 "1c", "1d")
+- <desc>: 中文描述
+- <and>/<or>/<not>: 逻辑运算
+- <evaluation>: 点力评估
+  - <hcp>: 高牌点范围
+  - <points>: 支持点范围
+  - <tricks>: 赢墩数
+  - <controls>: 控制点
+- <shape>: 牌型条件
+  - type="general": balanced/unbalanced
+  - type="spades/hearts/diamonds/clubs": 张数范围
+  - type="formula": 公式表达式
+
+================================================================================
+-->
+<biddingSystem name="modern_precision" version="1.0" hcp="standard" shape="standard">
+<openingBids>
+
+  <!--
+  ##############################################################################
+  # 一、开叫规则 (12条)
+  ##############################################################################
+  -->
+
+  <!-- 1. 1♣强开叫：16+ HCP -->
+  <bid id="1c">
+    <value>1c</value>
+    <desc>16+ HCP强牌约定叫，与梅花张数无关</desc>
+    <and>
+      <evaluation><hcp><min>16</min></hcp></evaluation>
+      <!-- 排除22-24P均型（开2NT） -->
+      <not>
+        <and>
+          <evaluation><hcp><min>22</min><max>24</max></hcp></evaluation>
+          <shape type="general">balanced</shape>
+        </and>
+      </not>
+      <!-- 排除25-27P均型（开3NT） -->
+      <not>
+        <and>
+          <evaluation><hcp><min>25</min><max>27</max></hcp></evaluation>
+          <shape type="general">balanced</shape>
+        </and>
+      </not>
+    </and>
+
+    <!--
+    ########################################################################
+    # 1♣开叫后的应叫 (25条)
+    ########################################################################
+    -->
+
+    <!-- 1-1. 1♦示弱应叫：0-7 HCP -->
+    <bid id="1c-1d">
+      <value>1d</value>
+      <desc>0-7 HCP示弱应叫，与方块张数无关</desc>
+      <evaluation><hcp><min>0</min><max>7</max></hcp></evaluation>
+
+      <!--
+      ####################################################################
+      # 1♣-1♦后开叫人再叫 (15条)
+      ####################################################################
+      -->
+
+      <!-- 1♣-1♦-1♥: 16-19 HCP, 5+梅花或5+红心 -->
+      <bid id="1c-1d-1h">
+        <value>1h</value>
+        <desc>16-19 HCP, 5+梅花或5+红心，或21-22均型</desc>
+        <or>
+          <and>
+            <evaluation><hcp><min>16</min><max>19</max></hcp></evaluation>
+            <or>
+              <shape type="clubs"><min>5</min></shape>
+              <shape type="hearts"><min>5</min></shape>
+            </or>
+          </and>
+          <and>
+            <evaluation><hcp><min>21</min><max>22</max></hcp></evaluation>
+            <shape type="general">balanced</shape>
+          </and>
+        </or>
+
+        <!-- 1♣-1♦-1♥-1♠: 接力问叫 -->
+        <bid id="1c-1d-1h-1s">
+          <value>1s</value>
+          <desc>接力，询问具体牌型</desc>
+          <and></and>
+
+          <!-- 1♣-1♦-1♥-1♠-1NT: 21-22均型 -->
+          <bid id="1c-1d-1h-1s-1n">
+            <value>1n</value>
+            <desc>21-22 HCP均型牌</desc>
+            <and>
+              <evaluation><hcp><min>21</min><max>22</max></hcp></evaluation>
+              <shape type="general">balanced</shape>
+            </and>
+          </bid>
+
+          <!-- 1♣-1♦-1♥-1♠-2♣: 16-20, 5+梅花 -->
+          <bid id="1c-1d-1h-1s-2c">
+            <value>2c</value>
+            <desc>16-20 HCP, 5张以上梅花</desc>
+            <and>
+              <evaluation><hcp><min>16</min><max>20</max></hcp></evaluation>
+              <shape type="clubs"><min>5</min></shape>
+            </and>
+          </bid>
+
+          <!-- 1♣-1♦-1♥-1♠-2♦: 16-20, 5张红心 -->
+          <bid id="1c-1d-1h-1s-2d">
+            <value>2d</value>
+            <desc>16-20 HCP, 5张红心</desc>
+            <and>
+              <evaluation><hcp><min>16</min><max>20</max></hcp></evaluation>
+              <shape type="hearts"><min>5</min><max>5</max></shape>
+            </and>
+          </bid>
+        </bid>
+      </bid>
+
+      <!-- 1♣-1♦-1♠: 16-19 HCP, 5+黑桃 -->
+      <bid id="1c-1d-1s">
+        <value>1s</value>
+        <desc>16-19 HCP, 5张以上黑桃</desc>
+        <and>
+          <evaluation><hcp><min>16</min><max>19</max></hcp></evaluation>
+          <shape type="spades"><min>5</min></shape>
+        </and>
+      </bid>
+
+      <!-- 1♣-1♦-1NT: 16-18 HCP均型 -->
+      <bid id="1c-1d-1n">
+        <value>1n</value>
+        <desc>16-18 HCP均型牌</desc>
+        <and>
+          <evaluation><hcp><min>16</min><max>18</max></hcp></evaluation>
+          <shape type="general">balanced</shape>
+        </and>
+      </bid>
+
+      <!-- 1♣-1♦-2♣: 16+ HCP, 5+梅花 -->
+      <bid id="1c-1d-2c">
+        <value>2c</value>
+        <desc>16+ HCP, 5张以上梅花，非均型</desc>
+        <and>
+          <evaluation><hcp><min>16</min></hcp></evaluation>
+          <shape type="clubs"><min>5</min></shape>
+          <shape type="general">unbalanced</shape>
+        </and>
+      </bid>
+
+      <!-- 1♣-1♦-2♦: 16+ HCP, 5+方块 -->
+      <bid id="1c-1d-2d">
+        <value>2d</value>
+        <desc>16+ HCP, 5张以上方块</desc>
+        <and>
+          <evaluation><hcp><min>16</min></hcp></evaluation>
+          <shape type="diamonds"><min>5</min></shape>
+        </and>
+      </bid>
+
+      <!-- 1♣-1♦-2♥: 16+ HCP, 6+红心 -->
+      <bid id="1c-1d-2h">
+        <value>2h</value>
+        <desc>16+ HCP, 6张以上红心</desc>
+        <and>
+          <evaluation><hcp><min>16</min></hcp></evaluation>
+          <shape type="hearts"><min>6</min></shape>
+        </and>
+      </bid>
+
+      <!-- 1♣-1♦-2♠: 16+ HCP, 6+黑桃 -->
+      <bid id="1c-1d-2s">
+        <value>2s</value>
+        <desc>16+ HCP, 6张以上黑桃</desc>
+        <and>
+          <evaluation><hcp><min>16</min></hcp></evaluation>
+          <shape type="spades"><min>6</min></shape>
+        </and>
+      </bid>
+
+      <!-- 1♣-1♦-2NT: 19-21 HCP均型 -->
+      <bid id="1c-1d-2n">
+        <value>2n</value>
+        <desc>19-21 HCP均型牌</desc>
+        <and>
+          <evaluation><hcp><min>19</min><max>21</max></hcp></evaluation>
+          <shape type="general">balanced</shape>
+        </and>
+      </bid>
+
+      <!-- 1♣-1♦-3♣: 16+ HCP, 6+梅花，强套 -->
+      <bid id="1c-1d-3c">
+        <value>3c</value>
+        <desc>16+ HCP, 6张以上梅花好套</desc>
+        <and>
+          <evaluation><hcp><min>16</min></hcp></evaluation>
+          <shape type="clubs"><min>6</min></shape>
+        </and>
+      </bid>
+
+      <!-- 1♣-1♦-3♦: 16+ HCP, 6+方块，强套 -->
+      <bid id="1c-1d-3d">
+        <value>3d</value>
+        <desc>16+ HCP, 6张以上方块好套</desc>
+        <and>
+          <evaluation><hcp><min>16</min></hcp></evaluation>
+          <shape type="diamonds"><min>6</min></shape>
+        </and>
+      </bid>
+    </bid>
+
+    <!-- 1-2. 1♥转移示强：8+ HCP, 5+黑桃 -->
+    <bid id="1c-1h">
+      <value>1h</value>
+      <desc>转移黑桃，8+ HCP, 5张以上黑桃</desc>
+      <and>
+        <evaluation><hcp><min>8</min></hcp></evaluation>
+        <shape type="spades"><min>5</min></shape>
+      </and>
+
+      <!-- 1♣-1♥-1♠: 接受转移 -->
+      <bid id="1c-1h-1s">
+        <value>1s</value>
+        <desc>接受转移，通常2-3张黑桃支持，一般牌力</desc>
+        <and></and>
+      </bid>
+
+      <!-- 1♣-1♥-2♠: 超接受转移 -->
+      <bid id="1c-1h-2s">
+        <value>2s</value>
+        <desc>超接受转移，高限牌力，4+张黑桃支持</desc>
+        <and>
+          <evaluation><hcp><min>19</min></hcp></evaluation>
+        </and>
+      </bid>
+
+      <!-- 1♣-1♥-1NT: NT再叫 -->
+      <bid id="1c-1h-1n">
+        <value>1n</value>
+        <desc>NT再叫，16-19 HCP均型，黑桃不支持</desc>
+        <and>
+          <evaluation><hcp><min>16</min><max>19</max></hcp></evaluation>
+          <shape type="general">balanced</shape>
+        </and>
+      </bid>
+
+      <!-- 1♣-1♥-2NT: 跳叫NT -->
+      <bid id="1c-1h-2n">
+        <value>2n</value>
+        <desc>跳叫NT，20-23 HCP均型牌</desc>
+        <and>
+          <evaluation><hcp><min>20</min><max>23</max></hcp></evaluation>
+          <shape type="general">balanced</shape>
+        </and>
+      </bid>
+
+      <!-- 1♣-1♥-新花色: 支持问叫 -->
+      <bid id="1c-1h-2c">
+        <value>2c</value>
+        <desc>新花色支持问叫，询问应叫人该花色支持情况</desc>
+        <and></and>
+      </bid>
+
+      <bid id="1c-1h-2d">
+        <value>2d</value>
+        <desc>新花色支持问叫，询问应叫人该花色支持情况</desc>
+        <and></and>
+      </bid>
+    </bid>
+
+    <!-- 1-3. 1♠转移示强：8+ HCP, 5+低花 -->
+    <bid id="1c-1s">
+      <value>1s</value>
+      <desc>转移低花，8+ HCP, 5张以上低花</desc>
+      <and>
+        <evaluation><hcp><min>8</min></hcp></evaluation>
+        <or>
+          <shape type="clubs"><min>5</min></shape>
+          <shape type="diamonds"><min>5</min></shape>
+        </or>
+      </and>
+
+      <!-- 1♣-1♠-1NT: 接受转移到梅花 -->
+      <bid id="1c-1s-1n">
+        <value>1n</value>
+        <desc>接受转移到梅花，一般牌力</desc>
+        <and></and>
+      </bid>
+
+      <!-- 1♣-1♠-2♣: 接受转移到方块 -->
+      <bid id="1c-1s-2c">
+        <value>2c</value>
+        <desc>接受转移到方块，一般牌力</desc>
+        <and></and>
+      </bid>
+
+      <!-- 1♣-1♠-2NT: 超接受转移到梅花 -->
+      <bid id="1c-1s-2n">
+        <value>2n</value>
+        <desc>超接受转移到梅花，高限牌力，4+张梅花支持</desc>
+        <and>
+          <evaluation><hcp><min>19</min></hcp></evaluation>
+        </and>
+      </bid>
+
+      <!-- 1♣-1♠-3♣: 超接受转移到方块 -->
+      <bid id="1c-1s-3c">
+        <value>3c</value>
+        <desc>超接受转移到方块，高限牌力，4+张方块支持</desc>
+        <and>
+          <evaluation><hcp><min>19</min></hcp></evaluation>
+        </and>
+      </bid>
+    </bid>
+
+    <!-- 1-4. 1NT应叫：8-10 HCP均型 -->
+    <bid id="1c-1n">
+      <value>1n</value>
+      <desc>8-10 HCP均型牌</desc>
+      <and>
+        <evaluation><hcp><min>8</min><max>10</max></hcp></evaluation>
+        <shape type="general">balanced</shape>
+      </and>
+    </bid>
+
+    <!-- 1-5. 2♣应叫：11+ HCP，逼局 -->
+    <bid id="1c-2c">
+      <value>2c</value>
+      <desc>11+ HCP，逼局，询问牌型</desc>
+      <evaluation><hcp><min>11</min></hcp></evaluation>
+    </bid>
+
+    <!-- 1-6. 2♦应叫：8-10 HCP, 4441牌型 -->
+    <bid id="1c-2d">
+      <value>2d</value>
+      <desc>8-10 HCP, 4441牌型</desc>
+      <and>
+        <evaluation><hcp><min>8</min><max>10</max></hcp></evaluation>
+        <shape type="shape">4441</shape>
+      </and>
+    </bid>
+
+    <!-- 1-7. 2♥应叫：5-7 HCP, 5-5双高 -->
+    <bid id="1c-2h">
+      <value>2h</value>
+      <desc>5-7 HCP, 5张以上双高花</desc>
+      <and>
+        <evaluation><hcp><min>5</min><max>7</max></hcp></evaluation>
+        <shape type="hearts"><min>5</min></shape>
+        <shape type="spades"><min>5</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1-8. 2♠应叫：5-7 HCP, 5-5双低 -->
+    <bid id="1c-2s">
+      <value>2s</value>
+      <desc>5-7 HCP, 5张以上双低花</desc>
+      <and>
+        <evaluation><hcp><min>5</min><max>7</max></hcp></evaluation>
+        <shape type="clubs"><min>5</min></shape>
+        <shape type="diamonds"><min>5</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1-9. 2NT应叫：11-12 HCP均型 -->
+    <bid id="1c-2n">
+      <value>2n</value>
+      <desc>11-12 HCP均型牌</desc>
+      <and>
+        <evaluation><hcp><min>11</min><max>12</max></hcp></evaluation>
+        <shape type="general">balanced</shape>
+      </and>
+    </bid>
+
+    <!-- 1-10. 3♣/3♦/3♥/3♠: 阻击性应叫 -->
+    <bid id="1c-3c">
+      <value>3c</value>
+      <desc>阻击性，7张梅花，0-6 HCP</desc>
+      <and>
+        <evaluation><hcp><min>0</min><max>6</max></hcp></evaluation>
+        <shape type="clubs"><min>7</min></shape>
+      </and>
+    </bid>
+
+    <bid id="1c-3d">
+      <value>3d</value>
+      <desc>阻击性，7张方块，0-6 HCP</desc>
+      <and>
+        <evaluation><hcp><min>0</min><max>6</max></hcp></evaluation>
+        <shape type="diamonds"><min>7</min></shape>
+      </and>
+    </bid>
+
+    <bid id="1c-3h">
+      <value>3h</value>
+      <desc>阻击性，7张红心，0-6 HCP</desc>
+      <and>
+        <evaluation><hcp><min>0</min><max>6</max></hcp></evaluation>
+        <shape type="hearts"><min>7</min></shape>
+      </and>
+    </bid>
+
+    <bid id="1c-3s">
+      <value>3s</value>
+      <desc>阻击性，7张黑桃，0-6 HCP</desc>
+      <and>
+        <evaluation><hcp><min>0</min><max>6</max></hcp></evaluation>
+        <shape type="spades"><min>7</min></shape>
+      </and>
+    </bid>
+  </bid>
+
+  <!-- 2. 1♦开叫：11-15 HCP, 2+方块 -->
+  <bid id="1d">
+    <value>1d</value>
+    <desc>11-15 HCP, 2张以上方块，无5张高花</desc>
+    <and>
+      <evaluation><hcp><min>11</min><max>15</max></hcp></evaluation>
+      <shape type="diamonds"><min>2</min></shape>
+      <shape type="hearts"><max>4</max></shape>
+      <shape type="spades"><max>4</max></shape>
+    </and>
+
+    <!--
+    ########################################################################
+    # 1♦开叫后的应叫 (12条)
+    ########################################################################
+    -->
+
+    <!-- 1♦-1♥: 6+ HCP, 4+红心 -->
+    <bid id="1d-1h">
+      <value>1h</value>
+      <desc>6+ HCP, 4张以上红心</desc>
+      <and>
+        <evaluation><hcp><min>6</min></hcp></evaluation>
+        <shape type="hearts"><min>4</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1♦-1♠: 6+ HCP, 4+黑桃 -->
+    <bid id="1d-1s">
+      <value>1s</value>
+      <desc>6+ HCP, 4张以上黑桃</desc>
+      <and>
+        <evaluation><hcp><min>6</min></hcp></evaluation>
+        <shape type="spades"><min>4</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1♦-1NT: 6-10 HCP -->
+    <bid id="1d-1n">
+      <value>1n</value>
+      <desc>6-10 HCP，无4张高花</desc>
+      <and>
+        <evaluation><hcp><min>6</min><max>10</max></hcp></evaluation>
+        <shape type="hearts"><max>3</max></shape>
+        <shape type="spades"><max>3</max></shape>
+      </and>
+    </bid>
+
+    <!-- 1♦-2♣: 11+ HCP, 5+梅花，逼局 -->
+    <bid id="1d-2c">
+      <value>2c</value>
+      <desc>11+ HCP, 5张以上梅花，逼局</desc>
+      <and>
+        <evaluation><hcp><min>11</min></hcp></evaluation>
+        <shape type="clubs"><min>5</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1♦-2♦: 6-10 HCP, 4+方块支持 -->
+    <bid id="1d-2d">
+      <value>2d</value>
+      <desc>6-10 支持点, 4张以上方块支持</desc>
+      <and>
+        <evaluation><points><min>6</min><max>10</max></points></evaluation>
+        <shape type="diamonds"><min>4</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1♦-2♥/2♠: Splinter -->
+    <bid id="1d-2h">
+      <value>2h</value>
+      <desc>Splinter，方块支持，红心单缺</desc>
+      <and>
+        <evaluation><points><min>10</min></points></evaluation>
+        <shape type="diamonds"><min>4</min></shape>
+        <or>
+          <shape type="hearts"><max>1</max></shape>
+        </or>
+      </and>
+    </bid>
+
+    <!-- 1♦-2NT: 13-15 HCP, 邀请 -->
+    <bid id="1d-2n">
+      <value>2n</value>
+      <desc>13-15 HCP均型，邀请</desc>
+      <and>
+        <evaluation><hcp><min>13</min><max>15</max></hcp></evaluation>
+        <shape type="general">balanced</shape>
+      </and>
+    </bid>
+
+    <!-- 1♦-3♦: 限制性加叫 -->
+    <bid id="1d-3d">
+      <value>3d</value>
+      <desc>10-12 支持点, 4张以上方块</desc>
+      <and>
+        <evaluation><points><min>10</min><max>12</max></points></evaluation>
+        <shape type="diamonds"><min>4</min></shape>
+      </and>
+    </bid>
+  </bid>
+
+  <!-- 3. 1♥开叫：11-15 HCP, 5+红心 -->
+  <bid id="1h">
+    <value>1h</value>
+    <desc>11-15 HCP, 5张以上红心</desc>
+    <and>
+      <evaluation><hcp><min>11</min><max>15</max></hcp></evaluation>
+      <shape type="hearts"><min>5</min></shape>
+    </and>
+
+    <!--
+    ########################################################################
+    # 1♥开叫后的应叫 (15条)
+    ########################################################################
+    -->
+
+    <!-- 1♥-1♠: 6+ HCP, 4+黑桃 -->
+    <bid id="1h-1s">
+      <value>1s</value>
+      <desc>6+ HCP, 4张以上黑桃</desc>
+      <and>
+        <evaluation><hcp><min>6</min></hcp></evaluation>
+        <shape type="spades"><min>4</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1♥-1NT: 6-12 HCP -->
+    <bid id="1h-1n">
+      <value>1n</value>
+      <desc>6-12 HCP，半逼叫</desc>
+      <evaluation><hcp><min>6</min><max>12</max></hcp></evaluation>
+    </bid>
+
+    <!-- 1♥-2♣/2♦: 二盖一逼局 -->
+    <bid id="1h-2c">
+      <value>2c</value>
+      <desc>11+ HCP, 5张以上梅花，逼局</desc>
+      <and>
+        <evaluation><hcp><min>11</min></hcp></evaluation>
+        <shape type="clubs"><min>5</min></shape>
+      </and>
+    </bid>
+
+    <bid id="1h-2d">
+      <value>2d</value>
+      <desc>11+ HCP, 5张以上方块，逼局</desc>
+      <and>
+        <evaluation><hcp><min>11</min></hcp></evaluation>
+        <shape type="diamonds"><min>5</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1♥-2♥: 简单加叫 -->
+    <bid id="1h-2h">
+      <value>2h</value>
+      <desc>6-9 支持点, 3张以上红心</desc>
+      <and>
+        <evaluation><points><min>6</min><max>9</max></points></evaluation>
+        <shape type="hearts"><min>3</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1♥-2NT: Jacoby 2NT -->
+    <bid id="1h-2n">
+      <value>2n</value>
+      <desc>13+ HCP（纯高牌点）, 4张以上红心，逼局</desc>
+      <and>
+        <evaluation><hcp><min>13</min></hcp></evaluation>
+        <shape type="hearts"><min>4</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1♥-3♥: 限制性加叫 -->
+    <bid id="1h-3h">
+      <value>3h</value>
+      <desc>10-12 支持点, 4张以上红心</desc>
+      <and>
+        <evaluation><points><min>10</min><max>12</max></points></evaluation>
+        <shape type="hearts"><min>4</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1♥-4♥: 关煞叫 -->
+    <bid id="1h-4h">
+      <value>4h</value>
+      <desc>关煞叫，5-10 HCP，牌型优势</desc>
+      <and>
+        <evaluation><hcp><min>5</min><max>10</max></hcp></evaluation>
+        <shape type="hearts"><min>4</min></shape>
+      </and>
+    </bid>
+  </bid>
+
+  <!-- 4. 1♠开叫：11-15 HCP, 5+黑桃 -->
+  <bid id="1s">
+    <value>1s</value>
+    <desc>11-15 HCP, 5张以上黑桃</desc>
+    <and>
+      <evaluation><hcp><min>11</min><max>15</max></hcp></evaluation>
+      <shape type="spades"><min>5</min></shape>
+    </and>
+
+    <!-- 1♠应叫规则与1♥类似 -->
+    <bid id="1s-1n">
+      <value>1n</value>
+      <desc>6-12 HCP，半逼叫</desc>
+      <evaluation><hcp><min>6</min><max>12</max></hcp></evaluation>
+    </bid>
+
+    <bid id="1s-2c">
+      <value>2c</value>
+      <desc>11+ HCP, 5张以上梅花，逼局</desc>
+      <and>
+        <evaluation><hcp><min>11</min></hcp></evaluation>
+        <shape type="clubs"><min>5</min></shape>
+      </and>
+    </bid>
+
+    <bid id="1s-2d">
+      <value>2d</value>
+      <desc>11+ HCP, 5张以上方块，逼局</desc>
+      <and>
+        <evaluation><hcp><min>11</min></hcp></evaluation>
+        <shape type="diamonds"><min>5</min></shape>
+      </and>
+    </bid>
+
+    <bid id="1s-2h">
+      <value>2h</value>
+      <desc>11+ HCP, 5张以上红心，逼局</desc>
+      <and>
+        <evaluation><hcp><min>11</min></hcp></evaluation>
+        <shape type="hearts"><min>5</min></shape>
+      </and>
+    </bid>
+
+    <bid id="1s-2s">
+      <value>2s</value>
+      <desc>6-9 支持点, 3张以上黑桃</desc>
+      <and>
+        <evaluation><points><min>6</min><max>9</max></points></evaluation>
+        <shape type="spades"><min>3</min></shape>
+      </and>
+    </bid>
+
+    <bid id="1s-2n">
+      <value>2n</value>
+      <desc>13+ HCP, 4张以上黑桃，逼局</desc>
+      <and>
+        <evaluation><hcp><min>13</min></hcp></evaluation>
+        <shape type="spades"><min>4</min></shape>
+      </and>
+    </bid>
+
+    <bid id="1s-3s">
+      <value>3s</value>
+      <desc>10-12 支持点, 4张以上黑桃</desc>
+      <and>
+        <evaluation><points><min>10</min><max>12</max></points></evaluation>
+        <shape type="spades"><min>4</min></shape>
+      </and>
+    </bid>
+  </bid>
+
+  <!-- 5. 1NT开叫：13-15 HCP均型 -->
+  <bid id="1n">
+    <value>1n</value>
+    <desc>13-15 HCP均型牌</desc>
+    <and>
+      <evaluation><hcp><min>13</min><max>15</max></hcp></evaluation>
+      <shape type="general">balanced</shape>
+    </and>
+
+    <!--
+    ########################################################################
+    # 1NT开叫后的应叫 (12条)
+    ########################################################################
+    -->
+
+    <!-- 1NT-2♣: 斯台曼 -->
+    <bid id="1n-2c">
+      <value>2c</value>
+      <desc>斯台曼，询问高花</desc>
+      <evaluation><hcp><min>6</min></hcp></evaluation>
+    </bid>
+
+    <!-- 1NT-2♦: 转移红心 -->
+    <bid id="1n-2d">
+      <value>2d</value>
+      <desc>转移到红心，5张以上红心</desc>
+      <and>
+        <shape type="hearts"><min>5</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1NT-2♥: 转移黑桃 -->
+    <bid id="1n-2h">
+      <value>2h</value>
+      <desc>转移到黑桃，5张以上黑桃</desc>
+      <and>
+        <shape type="spades"><min>5</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1NT-2♠: 低花转移 -->
+    <bid id="1n-2s">
+      <value>2s</value>
+      <desc>转移到梅花，6张以上梅花</desc>
+      <and>
+        <shape type="clubs"><min>6</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1NT-2NT: 邀请 -->
+    <bid id="1n-2n">
+      <value>2n</value>
+      <desc>8-10 HCP，邀请进局</desc>
+      <evaluation><hcp><min>8</min><max>10</max></hcp></evaluation>
+    </bid>
+
+    <!-- 1NT-3♣/3♦: 低花长套 -->
+    <bid id="1n-3c">
+      <value>3c</value>
+      <desc>6张以上梅花，5-9 HCP</desc>
+      <and>
+        <evaluation><hcp><min>5</min><max>9</max></hcp></evaluation>
+        <shape type="clubs"><min>6</min></shape>
+      </and>
+    </bid>
+
+    <bid id="1n-3d">
+      <value>3d</value>
+      <desc>6张以上方块，5-9 HCP</desc>
+      <and>
+        <evaluation><hcp><min>5</min><max>9</max></hcp></evaluation>
+        <shape type="diamonds"><min>6</min></shape>
+      </and>
+    </bid>
+
+    <!-- 1NT-3NT: 直接进局 -->
+    <bid id="1n-3n">
+      <value>3n</value>
+      <desc>11-15 HCP，直接进局</desc>
+      <evaluation><hcp><min>11</min><max>15</max></hcp></evaluation>
+    </bid>
+  </bid>
+
+  <!-- 6. 2♣开叫：11-15 HCP, 6+梅花 -->
+  <bid id="2c">
+    <value>2c</value>
+    <desc>11-15 HCP, 6张以上梅花</desc>
+    <and>
+      <evaluation><hcp><min>11</min><max>15</max></hcp></evaluation>
+      <shape type="clubs"><min>6</min></shape>
+    </and>
+  </bid>
+
+  <!-- 7. 2♦开叫：特殊约定 -->
+  <bid id="2d">
+    <value>2d</value>
+    <desc>特殊约定叫（视约定而定）</desc>
+    <and></and>
+  </bid>
+
+  <!-- 8. 2♥/2♠开叫：弱二 -->
+  <bid id="2h">
+    <value>2h</value>
+    <desc>弱二红心，5-10 HCP, 6张红心</desc>
+    <and>
+      <evaluation><hcp><min>5</min><max>10</max></hcp></evaluation>
+      <shape type="hearts"><min>6</min></shape>
+    </and>
+  </bid>
+
+  <bid id="2s">
+    <value>2s</value>
+    <desc>弱二黑桃，5-10 HCP, 6张黑桃</desc>
+    <and>
+      <evaluation><hcp><min>5</min><max>10</max></hcp></evaluation>
+      <shape type="spades"><min>6</min></shape>
+    </and>
+  </bid>
+
+  <!-- 9. 2NT开叫：22-24 HCP均型 -->
+  <bid id="2n">
+    <value>2n</value>
+    <desc>22-24 HCP均型牌</desc>
+    <and>
+      <evaluation><hcp><min>22</min><max>24</max></hcp></evaluation>
+      <shape type="general">balanced</shape>
+    </and>
+  </bid>
+
+  <!-- 10. 3阶阻击开叫 -->
+  <bid id="3c-preempt">
+    <value>3c</value>
+    <desc>阻击性，7张梅花，约5-10 HCP</desc>
+    <and>
+      <evaluation><hcp><min>5</min><max>10</max></hcp></evaluation>
+      <shape type="clubs"><min>7</min></shape>
+    </and>
+  </bid>
+
+  <bid id="3d-preempt">
+    <value>3d</value>
+    <desc>阻击性，7张方块，约5-10 HCP</desc>
+    <and>
+      <evaluation><hcp><min>5</min><max>10</max></hcp></evaluation>
+      <shape type="diamonds"><min>7</min></shape>
+    </and>
+  </bid>
+
+  <bid id="3h-preempt">
+    <value>3h</value>
+    <desc>阻击性，7张红心，约5-10 HCP</desc>
+    <and>
+      <evaluation><hcp><min>5</min><max>10</max></hcp></evaluation>
+      <shape type="hearts"><min>7</min></shape>
+    </and>
+  </bid>
+
+  <bid id="3s-preempt">
+    <value>3s</value>
+    <desc>阻击性，7张黑桃，约5-10 HCP</desc>
+    <and>
+      <evaluation><hcp><min>5</min><max>10</max></hcp></evaluation>
+      <shape type="spades"><min>7</min></shape>
+    </and>
+  </bid>
+
+  <!-- 11. 3NT赌博性开叫 -->
+  <bid id="3n-gambling">
+    <value>3n</value>
+    <desc>赌博性3NT，坚实低花长套</desc>
+    <and>
+      <or>
+        <shape type="clubs"><min>7</min></shape>
+        <shape type="diamonds"><min>7</min></shape>
+      </or>
+    </and>
+  </bid>
+
+  <!-- 12. 4阶阻击开叫 -->
+  <bid id="4c-preempt">
+    <value>4c</value>
+    <desc>阻击性，8张梅花，约3-7 HCP</desc>
+    <and>
+      <evaluation><hcp><min>3</min><max>7</max></hcp></evaluation>
+      <shape type="clubs"><min>8</min></shape>
+    </and>
+  </bid>
+
+  <bid id="4d-preempt">
+    <value>4d</value>
+    <desc>阻击性，8张方块，约3-7 HCP</desc>
+    <and>
+      <evaluation><hcp><min>3</min><max>7</max></hcp></evaluation>
+      <shape type="diamonds"><min>8</min></shape>
+    </and>
+  </bid>
+
+  <bid id="4h-preempt">
+    <value>4h</value>
+    <desc>阻击性，8张红心，约3-7 HCP</desc>
+    <and>
+      <evaluation><hcp><min>3</min><max>7</max></hcp></evaluation>
+      <shape type="hearts"><min>8</min></shape>
+    </and>
+  </bid>
+
+  <bid id="4s-preempt">
+    <value>4s</value>
+    <desc>阻击性，8张黑桃，约3-7 HCP</desc>
+    <and>
+      <evaluation><hcp><min>3</min><max>7</max></hcp></evaluation>
+      <shape type="spades"><min>8</min></shape>
+    </and>
+  </bid>
+
+</openingBids>
+
+<!--
+######################################################################################
+# 竞争叫牌规则 (Competitive Bidding)
+# 共18条规则
+######################################################################################
+-->
+<competitiveBids>
+
+  <!-- 八、竞争叫牌 - 争叫 -->
+
+  <!-- 1. 1阶争叫：8+ HCP, 5+张好套 -->
+  <bid id="overcall-1d">
+    <value>1d</value>
+    <desc>1阶争叫，8+ HCP, 5+张方块好套</desc>
+    <and>
+      <evaluation><hcp><min>8</min></hcp></evaluation>
+      <shape type="diamonds"><min>5</min></shape>
+    </and>
+  </bid>
+
+  <bid id="overcall-1h">
+    <value>1h</value>
+    <desc>1阶争叫，8+ HCP, 5+张红心好套</desc>
+    <and>
+      <evaluation><hcp><min>8</min></hcp></evaluation>
+      <shape type="hearts"><min>5</min></shape>
+    </and>
+  </bid>
+
+  <bid id="overcall-1s">
+    <value>1s</value>
+    <desc>1阶争叫，8+ HCP, 5+张黑桃好套</desc>
+    <and>
+      <evaluation><hcp><min>8</min></hcp></evaluation>
+      <shape type="spades"><min>5</min></shape>
+    </and>
+  </bid>
+
+  <!-- 2. 2阶争叫：10+ HCP, 5+张好套 -->
+  <bid id="overcall-2c">
+    <value>2c</value>
+    <desc>2阶争叫，10+ HCP, 5+张梅花好套</desc>
+    <and>
+      <evaluation><hcp><min>10</min></hcp></evaluation>
+      <shape type="clubs"><min>5</min></shape>
+    </and>
+  </bid>
+
+  <bid id="overcall-2d">
+    <value>2d</value>
+    <desc>2阶争叫，10+ HCP, 5+张方块好套</desc>
+    <and>
+      <evaluation><hcp><min>10</min></hcp></evaluation>
+      <shape type="diamonds"><min>5</min></shape>
+    </and>
+  </bid>
+
+  <bid id="overcall-2h">
+    <value>2h</value>
+    <desc>2阶争叫，10+ HCP, 5+张红心好套</desc>
+    <and>
+      <evaluation><hcp><min>10</min></hcp></evaluation>
+      <shape type="hearts"><min>5</min></shape>
+    </and>
+  </bid>
+
+  <bid id="overcall-2s">
+    <value>2s</value>
+    <desc>2阶争叫，10+ HCP, 5+张黑桃好套</desc>
+    <and>
+      <evaluation><hcp><min>10</min></hcp></evaluation>
+      <shape type="spades"><min>5</min></shape>
+    </and>
+  </bid>
+
+  <!-- 3. 1NT争叫：15-18 HCP均型 -->
+  <bid id="overcall-1n">
+    <value>1n</value>
+    <desc>1NT争叫，15-18 HCP均型，对手花色有止张</desc>
+    <and>
+      <evaluation><hcp><min>15</min><max>18</max></hcp></evaluation>
+      <shape type="general">balanced</shape>
+    </and>
+  </bid>
+
+  <!-- 4. 1阶技术性加倍：11+ HCP -->
+  <bid id="takeout-x-1level">
+    <value>x</value>
+    <desc>1阶技术性加倍，11+ HCP，支持未叫花色</desc>
+    <evaluation><hcp><min>11</min></hcp></evaluation>
+  </bid>
+
+  <!-- 5. 2阶技术性加倍：15+ HCP -->
+  <bid id="takeout-x-2level">
+    <value>x</value>
+    <desc>2阶技术性加倍，15+ HCP，支持未叫花色</desc>
+    <evaluation><hcp><min>15</min></hcp></evaluation>
+  </bid>
+
+  <!-- 6. 1阶负加倍：6+ HCP，未叫高花4-4 -->
+  <bid id="negative-x-1level">
+    <value>x</value>
+    <desc>1阶负加倍，6+ HCP，未叫高花4-4</desc>
+    <and>
+      <evaluation><hcp><min>6</min></hcp></evaluation>
+    </and>
+  </bid>
+
+  <!-- 7. 2阶负加倍：8+ HCP，未叫高花4-4 -->
+  <bid id="negative-x-2level">
+    <value>x</value>
+    <desc>2阶负加倍，8+ HCP，未叫高花4-4</desc>
+    <and>
+      <evaluation><hcp><min>8</min></hcp></evaluation>
+    </and>
+  </bid>
+
+  <!-- 8. Michaels扣叫 -->
+  <bid id="michaels-cuebid">
+    <value>cuebid</value>
+    <desc>Michaels扣叫，5-5两色套，6-12或15+ HCP</desc>
+    <and></and>
+  </bid>
+
+  <!-- 9. Unusual 2NT -->
+  <bid id="unusual-2n">
+    <value>2n</value>
+    <desc>Unusual 2NT，最低两未叫花色5-5，6+ HCP</desc>
+    <and>
+      <evaluation><hcp><min>6</min></hcp></evaluation>
+    </and>
+  </bid>
+
+  <!-- 10. 平衡位置加倍：8+ HCP -->
+  <bid id="balancing-x">
+    <value>x</value>
+    <desc>平衡位置技术性加倍，8+ HCP</desc>
+    <evaluation><hcp><min>8</min></hcp></evaluation>
+  </bid>
+
+  <!-- 11. 平衡位置1NT：12-14 HCP -->
+  <bid id="balancing-1n">
+    <value>1n</value>
+    <desc>平衡位置1NT争叫，12-14 HCP均型</desc>
+    <and>
+      <evaluation><hcp><min>12</min><max>14</max></hcp></evaluation>
+      <shape type="general">balanced</shape>
+    </and>
+  </bid>
+
+  <!-- 12. 阻击性跳叫争叫 -->
+  <bid id="preempt-overcall">
+    <value>jump</value>
+    <desc>阻击性跳叫争叫，约5-10 HCP，6-8张套</desc>
+    <and>
+      <evaluation><hcp><min>5</min><max>10</max></hcp></evaluation>
+    </and>
+  </bid>
+
+  <!-- 13. 加叫同伴争叫：6+ HCP, 3+张支持 -->
+  <bid id="raise-overcall">
+    <value>raise</value>
+    <desc>加叫同伴争叫花色，6+ HCP，3+张支持</desc>
+    <and>
+      <evaluation><hcp><min>6</min></hcp></evaluation>
+    </and>
+  </bid>
+
+  <!-- 14. 扣叫应答争叫：11+支持点 -->
+  <bid id="cuebid-response-overcall">
+    <value>cuebid</value>
+    <desc>扣叫应答争叫，11+支持点，3+张支持，逼叫到局</desc>
+    <and>
+      <evaluation><points><min>11</min></points></evaluation>
+    </and>
+  </bid>
+
+  <!-- 15. 花色应答技术性加倍 -->
+  <bid id="suit-response-to-x">
+    <value>suit</value>
+    <desc>花色应答技术性加倍，0+ HCP，最长未叫花色3+张</desc>
+    <and></and>
+  </bid>
+
+  <!-- 16. NT应答技术性加倍 -->
+  <bid id="1n-response-to-x">
+    <value>1n</value>
+    <desc>1NT应答技术性加倍，6-10 HCP均型</desc>
+    <and>
+      <evaluation><hcp><min>6</min><max>10</max></hcp></evaluation>
+      <shape type="general">balanced</shape>
+    </and>
+  </bid>
+
+  <bid id="2n-response-to-x">
+    <value>2n</value>
+    <desc>2NT应答技术性加倍，11-12 HCP均型</desc>
+    <and>
+      <evaluation><hcp><min>11</min><max>12</max></hcp></evaluation>
+      <shape type="general">balanced</shape>
+    </and>
+  </bid>
+
+  <bid id="3n-response-to-x">
+    <value>3n</value>
+    <desc>3NT应答技术性加倍，13-16 HCP均型</desc>
+    <and>
+      <evaluation><hcp><min>13</min><max>16</max></hcp></evaluation>
+      <shape type="general">balanced</shape>
+    </and>
+  </bid>
+
+  <!-- 17. 跳叫应答技术性加倍 -->
+  <bid id="jump-response-to-x">
+    <value>jump</value>
+    <desc>跳叫应答技术性加倍，10+ HCP，邀请进局</desc>
+    <and>
+      <evaluation><hcp><min>10</min></hcp></evaluation>
+    </and>
+  </bid>
+
+  <!-- 18. 扣叫应答技术性加倍 -->
+  <bid id="cuebid-response-to-x">
+    <value>cuebid</value>
+    <desc>扣叫应答技术性加倍，13+ HCP，逼叫到局</desc>
+    <and>
+      <evaluation><hcp><min>13</min></hcp></evaluation>
+    </and>
+  </bid>
+
+</competitiveBids>
+
+<!--
+######################################################################################
+# 满贯叫牌规则 (Slam Bidding)
+# 共10条规则
+######################################################################################
+-->
+<slamBids>
+
+  <!-- 九、满贯叫牌 -->
+
+  <!-- 1. 4NT Blackwood问A -->
+  <bid id="blackwood-4n">
+    <value>4n</value>
+    <desc>4NT Blackwood问A，有配合后询问A数量</desc>
+    <and></and>
+  </bid>
+
+  <!-- 2-5. Blackwood应答 -->
+  <bid id="blackwood-5c">
+    <value>5c</value>
+    <desc>Blackwood应答，0或4个A</desc>
+    <and></and>
+  </bid>
+
+  <bid id="blackwood-5d">
+    <value>5d</value>
+    <desc>Blackwood应答，1个A</desc>
+    <and></and>
+  </bid>
+
+  <bid id="blackwood-5h">
+    <value>5h</value>
+    <desc>Blackwood应答，2个A</desc>
+    <and></and>
+  </bid>
+
+  <bid id="blackwood-5s">
+    <value>5s</value>
+    <desc>Blackwood应答，3个A</desc>
+    <and></and>
+  </bid>
+
+  <!-- 6. 4♣ Gerber问A -->
+  <bid id="gerber-4c">
+    <value>4c</value>
+    <desc>4♣ Gerber问A，同伴叫无将后询问A数量</desc>
+    <and></and>
+  </bid>
+
+  <!-- 7-10. Gerber应答 -->
+  <bid id="gerber-4d">
+    <value>4d</value>
+    <desc>Gerber应答，0或4个A</desc>
+    <and></and>
+  </bid>
+
+  <bid id="gerber-4h">
+    <value>4h</value>
+    <desc>Gerber应答，1个A</desc>
+    <and></and>
+  </bid>
+
+  <bid id="gerber-4s">
+    <value>4s</value>
+    <desc>Gerber应答，2个A</desc>
+    <and></and>
+  </bid>
+
+  <bid id="gerber-4n">
+    <value>4n</value>
+    <desc>Gerber应答，3个A</desc>
+    <and></and>
+  </bid>
+
+</slamBids>
+
+</biddingSystem>
