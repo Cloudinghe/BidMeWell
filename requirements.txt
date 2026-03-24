@@ -1,0 +1,20 @@
+# Precision Bidding - Python Dependencies
+# Python 3.8+ required
+
+# Core dependencies
+# Note: redeal is included as a submodule in src/practice_bidding/redeal
+
+# XML parsing (built-in, no installation needed)
+# xml.etree.ElementTree
+
+# Testing
+pytest>=7.0.0
+pytest-cov>=4.0.0
+
+# Optional: for better console output
+colorama>=0.4.6
+
+# Development tools
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.0.0
