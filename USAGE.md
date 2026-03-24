@@ -442,6 +442,112 @@ K = 1控制
 
 ---
 
+## XML规则条件详解
+
+本项目支持丰富的XML条件类型，可精确表达各种叫牌规则：
+
+### 基本条件类型
+
+#### 1. 点力条件
+```xml
+
+<evaluation>
+  <hcp><min>10</min><max>13</max></hcp>
+</evaluation>
+```
+
+#### 2. 张数条件
+```xml
+
+<shape type="diamonds"><min>7</min></shape>
+```
+
+#### 3. 牌型条件
+```xml
+
+<shape type="general">balanced</shape>  <!-- 均型牌 -->
+
+<shape type="general">unbalanced</shape>  <!-- 非均型牌 -->
+```
+
+### 高级条件类型（新增）
+
+#### 4. 顶部特定牌检查
+检查花色前N张是否包含特定牌（如AKQ领头）：
+```xml
+
+<topCards suit="diamonds" positions="3" contains="AKQ"/>
+```
+
+#### 5. 边花条件
+检查边花（非主套）是否包含/不包含特定牌：
+```xml
+<!-- 边花无A或K -->
+
+<sideSuits exclude="diamonds" notContains="A,K"/>
+
+<!-- 边花必须有A -->
+
+<sideSuits exclude="clubs" contains="A"/>
+```
+
+#### 6. 止张检查
+检查某花色是否有止张（A/K/Q为首）：
+```xml
+
+<stopper suit="hearts" has="true"/>   <!-- 有止张 -->
+
+<stopper suit="spades" has="false"/>  <!-- 无止张 -->
+```
+
+#### 7. 分布检查
+检查牌型分布（单缺、双张）：
+```xml
+
+<distribution type="singleton"/>  <!-- 有单张 -->
+
+<distribution type="void"/>       <!-- 有缺门 -->
+
+<distribution type="doubleton"/>  <!-- 有双张 -->
+```
+
+#### 8. 大牌分布
+检查某花色的大牌数量和位置：
+```xml
+<!-- 前5张中有3张大牌（A/K/Q） -->
+<honors suit="hearts" count="3" in="top5"/>
+
+<!-- 某花色有至少2张大牌 -->
+<honors suit="spades" count="2"/>
+```
+
+### 完整示例：3NT赌博性开叫
+
+```xml
+
+<bid id="3n-gambling">
+  <value>3n</value>
+  <desc>赌博性3NT，坚实低花长套（AKQ领头），边花无A或K，10-13 HCP</desc>
+  <and>
+    <evaluation><hcp><min>10</min><max>13</max></hcp></evaluation>
+    <or>
+      <and>
+        <shape type="clubs"><min>7</min></shape>
+        <topCards suit="clubs" positions="3" contains="AKQ"/>
+        <sideSuits exclude="clubs" notContains="A,K"/>
+      </and>
+      <and>
+        <shape type="diamonds"><min>7</min></shape>
+        <topCards suit="diamonds" positions="3" contains="AKQ"/>
+        <sideSuits exclude="diamonds" notContains="A,K"/>
+      </and>
+    </or>
+  </and>
+</bid>
+```
+
+---
+
 ## 常见问题
 
 ### Q1: 如何退出程序？

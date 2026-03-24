@@ -132,12 +132,20 @@ python scripts/validate_rules.py
 基于 XML 定义的叫牌规则，程序自动判断开叫是否正确：
 
 ```xml
+
 <bid id="1c">
   <value>1c</value>
   <desc>16+ HCP强牌约定叫</desc>
   <evaluation><hcp><min>16</min></hcp></evaluation>
 </bid>
 ```
+
+支持精确条件检查：
+- **点力范围**：HCP、支持点、控制点
+- **张数检查**：花色张数、牌型分布
+- **特定牌检查**：AKQ领头、坚固套、边花无A/K
+- **止张检查**：是否有止张、无止张
+- **分布检查**：单缺、双张、均型/非均型
 
 ### 4. 规则覆盖
 

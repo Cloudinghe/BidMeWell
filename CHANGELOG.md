@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 扩展开叫及应叫规则 (87条)
 - 新增单牌测试脚本 (test_single_hand.py)
 - 新增应叫练习脚本 (run_practice2.py) - 练习同伴开叫后的应叫能力
+- **新增通用条件判断框架** - 支持精确的规则条件检查
 
 ## [0.2.0] - 2026-03-24
 
